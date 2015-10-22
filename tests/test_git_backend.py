@@ -46,4 +46,27 @@ def test_read_write(db_factory):
     db1.insert({'type': 'apple', 'count': 7})
     db1.insert({'type': 'peach', 'count': 3})
     all1 = db1.all()
-    assert all1[1] == {'type': 'apple', 'count': 7}
+
+    assert len(all1) == 2
+    assert all1[0] == {'type': 'apple', 'count': 7}
+    assert all1[1] == {'type': 'peach', 'count': 3}
+
+    db2 = db_factory()
+    all2 = db2.all()
+
+    assert len(all2) == 2
+    assert all2[0] == {'type': 'apple', 'count': 7}
+    assert all2[1] == {'type': 'peach', 'count': 3}
+
+
+def test_writes_parent(repo, db):
+    db.insert({'a': 1})
+
+    commit = repo[db._storage._refname]
+    parent_id = commit.id
+    # initial commit will also have a parent, containing the empty database
+
+    db.insert({'b': 1})
+    commit = repo[db._storage._refname]
+
+    assert commit.parents == [parent_id]

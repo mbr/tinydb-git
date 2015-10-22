@@ -1,3 +1,4 @@
+import json
 import time
 
 from dulwich.repo import Repo
@@ -25,10 +26,10 @@ class JSONGitStorage(Storage):
         return b'refs/heads/' + self.branch
 
     def _serialize(self, data):
-        return b'meep'
+        return json.dumps(data, sort_keys=True, indent=2)
 
     def _deserialize(self, raw):
-        return {}
+        return json.loads(raw)
 
     def read(self):
         try:
@@ -56,12 +57,13 @@ class JSONGitStorage(Storage):
         blob = Blob.from_string(self._serialize(data))
 
         try:
-            branch_sha = self.repo[self.branch]
+            parent_commit = self.repo[self._refname]
         except KeyError:
             # branch does not exist, start with an empty tree
             tree = Tree()
         else:
-            raise NotImplementedError
+            commit.parents = [parent_commit.id]
+            tree = self.repo[parent_commit.tree]
 
         # no subdirs in filename, add directly to tree
         tree.add(self.filename, 0o100644, blob.id)
