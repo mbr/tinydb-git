@@ -20,7 +20,7 @@ setup(
     url='https://github.com/mbr/tinydb-git',
     license='MIT',
     packages=find_packages(exclude=['tests']),
-    install_requires=[],
+    install_requires=['dulwich'],
     classifiers=[
         'Programming Language :: Python :: 2',
     ]
