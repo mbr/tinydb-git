@@ -3,6 +3,8 @@ import subprocess
 
 from dulwich.repo import Repo
 import pytest
+from tinydb import TinyDB
+from tinydb_git import JSONGitStorage
 import volatile
 
 
@@ -18,5 +20,14 @@ def repo(repo_dir):
     return Repo(repo_dir)
 
 
+@pytest.fixture()
+def tdb(repo_dir):
+    return TinyDB(repo_dir, storage=JSONGitStorage)
+
+
 def test_repo_fixture(repo_dir):
     assert os.path.exists(os.path.join(repo_dir, '.git'))
+
+
+def test_backend_simple(tdb):
+    pass
