@@ -6,6 +6,7 @@ from dulwich.repo import Repo
 import pytest
 from tinydb import TinyDB
 from tinydb_git import JSONGitStorage
+from tinyrecord import transaction
 import volatile
 
 
@@ -70,3 +71,23 @@ def test_writes_parent(repo, db):
     commit = repo[db._storage._refname]
 
     assert commit.parents == [parent_id]
+
+
+def test_single_commit_per_transaction(repo, db):
+    db.insert({'a': 1})
+    # 2 commits so far, one for intializations, one for adding insert
+
+    commit = repo[db._storage._refname]
+    parent_commit = repo[commit.parents[0]]
+
+    assert parent_commit.parents == []
+
+    # create transction with 3 inserts, this should return into a single
+    # new commit
+    with transaction(db.table('_default')) as t:
+        t.insert({'b': 2})
+        t.insert({'c': 3})
+        t.insert({'d': 4})
+
+    latest = repo[db._storage._refname]
+    assert latest.parents == [commit.id]
