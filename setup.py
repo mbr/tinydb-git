@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='tinydb-git',
-    version='0.1.dev1',
+    version='0.2.dev1',
     description='A git-based storage backend for tinydb.',
     long_description=read('README.rst'),
     author='Marc Brinkmann',
