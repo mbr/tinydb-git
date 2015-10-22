@@ -33,8 +33,8 @@ Every modification of the database results in a new commit:
 
         Updated by tinydb-git 0.1.dev1
 
-Multiple ``insert()`` calls result in a commit each time. If this is not
-desirable, tinyrecord_ transactions can alleviate the issue:
+Multiple ``insert()`` calls result in a commit for each call. This can be
+avoided by using a tinyrecord_ transaction:
 
 .. code-block:: pycon
 
@@ -93,3 +93,4 @@ to make diffs pleasant to read and help with compression:
 
 
 .. _tinydb: http://tinydb.readthedocs.org/
+.. _tinyrecord: https://github.com/eugene-eeo/tinyrecord
