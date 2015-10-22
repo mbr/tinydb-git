@@ -10,11 +10,11 @@ __version__ = '0.1.dev1'
 
 
 class JSONGitStorage(Storage):
-    def __init__(self, repo_path, branch='master', filename='tinydb.json'):
+    def __init__(self, repo_path, branch=b'master', filename=b'tinydb.json'):
         self.branch = branch
         self.filename = filename
 
-        if '/' in filename:
+        if b'/' in filename:
             raise NotImplementedError(
                 'Currently, subdir support is not implemented. Annoy the '
                 'author on github to get it done.')
@@ -26,10 +26,10 @@ class JSONGitStorage(Storage):
         return b'refs/heads/' + self.branch
 
     def _serialize(self, data):
-        return json.dumps(data, sort_keys=True, indent=2)
+        return json.dumps(data, sort_keys=True, indent=2).encode('utf8')
 
     def _deserialize(self, raw):
-        return json.loads(raw)
+        return json.loads(raw.decode('utf8'))
 
     def read(self):
         try:
@@ -39,7 +39,8 @@ class JSONGitStorage(Storage):
         except KeyError:
             raise ValueError
 
-        return self._deserialize(str(blob))
+        buf = blob.as_raw_string()
+        return self._deserialize(buf)
 
     def write(self, data):
         commit = Commit()
@@ -50,8 +51,9 @@ class JSONGitStorage(Storage):
         commit.commit_time = commit.author_time = int(time.time())
         tz = time.timezone if (time.localtime().tm_isdst) else time.altzone
         commit.commit_timezone = commit.author_timezone = tz
-        commit.encoding = b"UTF-8"
-        commit.message = b"Updated by tinydb-git {}".format(__version__)
+        commit.encoding = b'UTF-8'
+        commit.message = ('Updated by tinydb-git {}'.format(__version__)
+                          .encode('utf8'))
 
         # prepare blob
         blob = Blob.from_string(self._serialize(data))
