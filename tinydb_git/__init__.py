@@ -6,7 +6,7 @@ from dulwich.objects import Commit, Tree, Blob
 from tinydb.storages import Storage
 
 
-__version__ = '0.1.dev1'
+__version__ = '0.1'
 
 
 class JSONGitStorage(Storage):
