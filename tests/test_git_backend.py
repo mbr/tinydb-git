@@ -1,3 +1,4 @@
+from functools import partial
 import os
 import subprocess
 
@@ -21,13 +22,28 @@ def repo(repo_dir):
 
 
 @pytest.fixture()
-def tdb(repo_dir):
-    return TinyDB(repo_dir, storage=JSONGitStorage)
+def db_factory(repo_dir):
+    return partial(TinyDB, repo_dir, storage=JSONGitStorage)
+
+
+@pytest.fixture()
+def db(db_factory):
+    return db_factory()
 
 
 def test_repo_fixture(repo_dir):
     assert os.path.exists(os.path.join(repo_dir, '.git'))
 
 
-def test_backend_simple(tdb):
+def test_backend_simple(db):
     pass
+
+
+def test_read_write(db_factory):
+    db1 = db_factory()
+    assert not db1.all()
+
+    db1.insert({'type': 'apple', 'count': 7})
+    db1.insert({'type': 'peach', 'count': 3})
+    all1 = db1.all()
+    assert all1[1] == {'type': 'apple', 'count': 7}

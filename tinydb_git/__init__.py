@@ -20,15 +20,25 @@ class JSONGitStorage(Storage):
 
         self.repo = Repo(repo_path)
 
+    @property
+    def _refname(self):
+        return b'refs/heads/' + self.branch
+
     def _serialize(self, data):
         return b'meep'
 
+    def _deserialize(self, raw):
+        return {}
+
     def read(self):
         try:
-            branch_sha = self.repo[self.branch]
+            commit = self.repo[self._refname]
+            tree = self.repo[commit.tree]
+            blob = self.repo[tree[self.filename][1]]
         except KeyError:
             raise ValueError
-        raise NotImplementedError
+
+        return self._deserialize(str(blob))
 
     def write(self, data):
         commit = Commit()
@@ -57,9 +67,14 @@ class JSONGitStorage(Storage):
         tree.add(self.filename, 0o100644, blob.id)
 
         commit.tree = tree.id
+
+        # add objects
         self.repo.object_store.add_object(blob)
         self.repo.object_store.add_object(tree)
         self.repo.object_store.add_object(commit)
+
+        # update refs
+        self.repo.refs[self._refname] = commit.id
 
     def close(self):
         raise NotImplementedError
