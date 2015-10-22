@@ -23,5 +23,6 @@ setup(
     install_requires=['dulwich', 'tinydb'],
     classifiers=[
         'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
     ]
 )
