@@ -91,6 +91,17 @@ to make diffs pleasant to read and help with compression:
      }
     \ No newline at end of file
 
+YAML
+~~~~
+
+Alternatively, data can be stored as YAML, which allows things like
+`datetime`-Instances to be represented correctly:
+
+.. code-block:: pycon
+
+    >>> import tinydb
+    >>> from tinydb_git.yaml import YAMLGitStoroage
+    >>> db = tinydb.TinyDB('example', storage=YAMLGitStoroage)
 
 .. _tinydb: http://tinydb.readthedocs.org/
 .. _tinyrecord: https://github.com/eugene-eeo/tinyrecord
