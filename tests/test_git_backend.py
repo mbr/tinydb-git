@@ -5,7 +5,7 @@ import subprocess
 from dulwich.repo import Repo
 import pytest
 from tinydb import TinyDB
-from tinydb_git import JSONGitStorage
+from tinydb_git.json import JSONGitStorage
 from tinyrecord import transaction
 import volatile
 

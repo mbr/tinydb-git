@@ -1,15 +1,13 @@
-import json
 import time
 
 from dulwich.repo import Repo
 from dulwich.objects import Commit, Tree, Blob
 from tinydb.storages import Storage
 
-
 __version__ = '0.2.dev1'
 
 
-class JSONGitStorage(Storage):
+class GitStorage(Storage):
     def __init__(self, repo_path, branch=b'master', filename=b'tinydb.json'):
         self.branch = branch
         self.filename = filename
@@ -24,12 +22,6 @@ class JSONGitStorage(Storage):
     @property
     def _refname(self):
         return b'refs/heads/' + self.branch
-
-    def _serialize(self, data):
-        return json.dumps(data, sort_keys=True, indent=2).encode('utf8')
-
-    def _deserialize(self, raw):
-        return json.loads(raw.decode('utf8'))
 
     def read(self):
         try:
