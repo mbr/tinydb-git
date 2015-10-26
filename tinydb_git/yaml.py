@@ -19,12 +19,17 @@ TinyDBDumper.add_representer(Element, TinyDBDumper.represent_dict)
 class YAMLGitStorage(GitStorage):
     ENCODING = 'utf8'
 
-    def __init__(self, repo_path, branch=b'master', filename=b'tinydb.yaml'):
+    def __init__(self,
+                 repo_path,
+                 branch=b'master',
+                 filename=b'tinydb.yaml',
+                 yaml_dumper=TinyDBDumper):
         super(YAMLGitStorage, self).__init__(repo_path, branch, filename)
+        self.dumper_class = yaml_dumper
 
     def _serialize(self, data):
         return yaml.dump(data,
-                         Dumper=TinyDBDumper,
+                         Dumper=self.dumper_class,
                          indent=2,
                          default_flow_style=False,
                          encoding=self.ENCODING)
