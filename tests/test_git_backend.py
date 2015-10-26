@@ -6,6 +6,7 @@ from dulwich.repo import Repo
 import pytest
 from tinydb import TinyDB
 from tinydb_git.json import JSONGitStorage
+from tinydb_git.yaml import YAMLGitStorage
 from tinyrecord import transaction
 import volatile
 
@@ -22,9 +23,13 @@ def repo(repo_dir):
     return Repo(repo_dir)
 
 
-@pytest.fixture()
-def db_factory(repo_dir):
-    return partial(TinyDB, repo_dir, storage=JSONGitStorage)
+@pytest.fixture(params=['yaml', 'json'])
+def db_factory(request, repo_dir):
+    if request.param == 'json':
+        return partial(TinyDB, repo_dir, storage=JSONGitStorage)
+    if request.param == 'yaml':
+        return partial(TinyDB, repo_dir, storage=YAMLGitStorage)
+    assert False, 'unreachable'
 
 
 @pytest.fixture()

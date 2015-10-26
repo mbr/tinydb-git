@@ -8,7 +8,7 @@ __version__ = '0.2.dev1'
 
 
 class GitStorage(Storage):
-    def __init__(self, repo_path, branch=b'master', filename=b'tinydb.json'):
+    def __init__(self, repo_path, branch, filename):
         self.branch = branch
         self.filename = filename
 
