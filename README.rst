@@ -17,7 +17,7 @@ Every modification of the database results in a new commit:
 .. code-block:: pycon
 
     >>> import tinydb
-    >>> from tinydb_git.json import JSONGitStorage
+    >>> from tinydb_git.json_storage import JSONGitStorage
     >>> db = tinydb.TinyDB('example', storage=JSONGitStorage)
     >>> db.insert({'text': 'first record'})
     1
